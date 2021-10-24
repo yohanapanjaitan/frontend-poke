@@ -12,10 +12,6 @@ export default new Vuex.Store({
     user: null
   },
 
-  mounted () {
-    console.log(process.env.VUE_BACKEND_URL)
-  },
-
   mutations: {
     setUserData (state, userData) {
       state.user = userData
