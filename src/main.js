@@ -5,8 +5,12 @@ import App from './App'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import VueSweetalert2 from 'vue-sweetalert2'
 
 Vue.config.productionTip = false
+Vue.use(VueSweetalert2)
+
+require('sweetalert2/dist/sweetalert2.min.css')
 
 /* eslint-disable no-new */
 new Vue({

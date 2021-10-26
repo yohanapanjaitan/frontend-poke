@@ -9,7 +9,8 @@ axios.defaults.baseURL = 'http://localhost:8000/v1'
 
 export default new Vuex.Store({
   state: {
-    user: null
+    user: null,
+    isLoggedIn: false
   },
 
   mutations: {
@@ -19,9 +20,23 @@ export default new Vuex.Store({
       axios.defaults.headers.common.Authorization = `Bearer ${userData.authorization}`
     },
 
+    setValue (state, {name, value}) {
+      state[name] = value
+    },
+
     clearUserData () {
       localStorage.removeItem('user')
       location.reload()
+    },
+
+    setAlert (state, alert) {
+      state.alert = alert
+      localStorage.setItem('alert', JSON.stringify(alert))
+    },
+
+    setStatus (state, status) {
+      state.status = status
+      localStorage.setItem('status', JSON.stringify(status))
     }
   },
 
@@ -31,6 +46,13 @@ export default new Vuex.Store({
         .post('/user/auth', credentials)
         .then(({ data }) => {
           commit('setUserData', data.data)
+          commit('setValue', {name: 'isLoggedIn', value: true})
+          commit('setAlert', 'success')
+          commit('setStatus', 'success')
+        })
+        .catch(err => {
+          commit('setAlert', err.response.data.message)
+          commit('setStatus', 'error')
         })
     },
 
@@ -39,11 +61,19 @@ export default new Vuex.Store({
         .post('/user/register', credentials)
         .then(({ data }) => {
           commit('setUserData', data.data)
+          commit('setValue', {name: 'isLoggedIn', value: true})
+          commit('setAlert', 'success')
+          commit('setStatus', 'success')
+        })
+        .catch(err => {
+          commit('setAlert', err.response.data.message)
+          commit('setStatus', 'error')
         })
     },
 
     logout ({ commit }) {
       commit('clearUserData')
+      commit('setValue', {name: 'isLoggedIn', value: false})
     }
   },
 

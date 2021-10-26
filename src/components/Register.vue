@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Register</h1>
+    <h2>Register</h2>
     <form @submit.prevent="register">
       <input type="email" name="email" placeholder="email" v-model="email"> <br>
       <input type="text" name="name" placeholder="name" v-model="name"> <br>
@@ -32,10 +32,11 @@ export default {
           name: this.name
         })
         .then(() => {
-          this.$router.push({ name: 'Pokemon' })
-        })
-        .catch(err => {
-          console.log(err)
+          this.$swal('Register', this.$store.state.alert, this.$store.state.status)
+
+          if (this.$store && this.$store.state && this.$store.state.user.authorization) {
+            this.$router.push({ name: 'Pokemon' })
+          }
         })
     }
   }
@@ -49,7 +50,7 @@ export default {
   input {
     width: 40%;
     padding: 20px;
-    margin: 10px;
+    margin: 10px 10px 10px 0px;
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -59,9 +60,9 @@ export default {
     background-color: #4CAF50;
     border: none;
     color: white;
-    width: 10%;
+    width: 15%;
     padding: 5px;
-    margin: 10px;
+    margin: 10px 10px 10px 0px;
     text-align: center;
     text-decoration: none;
     display: inline-block;

@@ -1,22 +1,27 @@
 <template>
-  <div>
-    <h1>Hello {{ this.$store.state.user.name }}</h1>
+  <div v-if="this.$store && this.$store.state.user">
+    <h2>{{ this.$store.state.user.name }}'s pokebrary</h2>
     <button @click="getPokemonData"> Fetch my pokemon! </button>
-    <div v-if="user !== null" class="profile">
-      <img v-bind:src="pokemonImage" width="200" height="200"> <br>
-      <label>Name: {{ pokemonName }}</label> <br>
-      <label>Key stats:</label>
-      <ul id="example-1">
-        <li v-for="stat in status" :key="stat">
-          {{stat.stat.name}}:  {{stat.base_stat}}
-        </li> <br>
-      </ul>
+    <div v-if="pokemonImage !== null" class="profile">
+      <div>
+        <img v-bind:src="pokemonImage" width="200" height="200"> <br>
+      </div>
+      <div class="data">
+        <label>Name: {{ pokemonName }}</label> <br>
+        <label>Key stats:</label>
+        <label class="flex">
+          <li v-for="{stat, base_stat, idx} in status" :key="idx">
+            {{stat.name}}:  {{base_stat}}
+          </li> <br>
+        </label>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
@@ -26,6 +31,13 @@ export default {
       status: null
     }
   },
+
+  computed: {
+    ...mapGetters([
+      'isLogged'
+    ])
+  },
+
   methods: {
     async getPokemonData () {
       const config = {
@@ -40,9 +52,10 @@ export default {
         this.pokemonImage = res.data.data.image
         this.status = res.data.data.stats
       }).catch(err => {
-        console.log(err)
+        console.log(err.body.error)
       })
     }
+
   },
   mounted () {
   }
@@ -53,12 +66,11 @@ export default {
 <style scoped>
   h1, h2 {
     font-weight: normal;
-    margin-left: 15px;
   }
   input {
     width: 40%;
     padding: 12px 20px;
-    margin: 8px 0;
+    margin: 10px 10px 10px 0px;
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -68,8 +80,8 @@ export default {
     background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 15px 32px;
-    margin: 15px;
+    padding: 15px 35px;
+    margin: 10px 10px 10px 0px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -77,12 +89,30 @@ export default {
   }
   .profile {
     padding: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    /* flex-direction: column; */
+  }
+  .data {
+    margin-left: 15px;
   }
   label, ul, li {
     font-size: 20px;
   }
+  ul {
+    display: flex;
+    
+  }
   ul, li {
     padding-left: -10px;
+  }
+  .flex {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    /* max-width: 32em; */
+    /* height: 30em; */
+    /* margin: 1em auto; */
   }
   
 </style>
